@@ -4,72 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SayGex Pro</title>
-    <style>
-        a {
-            background-color: aqua;
-            display: inline-block;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #000000;
-        }
-
-        p {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #000000;
-        }
-
-        h3 {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #000000;
-        }
-
-        h2 {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #000000;
-        }
-
-        h1 {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-            position: absolute;
-            z-index: 2;
-            left: 2%;
-            top: 1%;
-        }
-
-        header {
-            position: relative;
-            z-index: 1;
-            height: 100px;
-            overflow: hidden;
-        }
-
-        header img {
-            position: absolute;
-            z-index: -1;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        header nav {
-            position: absolute;
-            right: 30px;
-            z-index: 2;
-            top: 1%;
-        }
-
-        .up {
-            background-color: rgb(255, 255, 255);
-            color: #000000;
-        }
-    </style>
+    <title>SayGex Shop</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
     <script src="./assets/scripts/script.js"></script>
 </head>
 
 <body>
     <header>
-        <h1>SayGex Pro</h1>
+        <h1>SayGex Shop</h1>
         <div>
             <img src="https://wallpapercave.com/wp/wp14319833.jpg" alt="banner">
         </div>
@@ -83,30 +25,37 @@
     </header>
     <main>
         <section>
+            <h2>Товари:</h2>
+            <article>
+                <h3>Новинка:</h3>
+                <img src="https://content1.rozetka.com.ua/goods/images/big/509704617.jpg" class="product_image"
+                    alt="product_image_01">
+                <p>RTX 5090 - 189 999₴</p>
+                <a href="#" class="btn">Купити</a>
+            </article>
+            <article>
+                <h3>Пропозиція дня:</h3>
+                <img src="https://content1.rozetka.com.ua/goods/images/big/511166309.jpg" class="product_image"
+                    alt="product_image_02">
+                <p>RTX 5080 - 75 999₴</p>
+                <a href="#" class="btn">Купити</a>
+            </article>
+        </section>
+        <section>
             <h2>Новини:</h2>
             <article>
                 <h3>Терміново:</h3>
-                <p>Сьогодні в Кропивницькому було втрачено цнотливість, прямо в центрі місця, звинувачиння висунуті двом
-                    чоловікам...</p>
+                <img src="https://logos-ukraine.com.ua/project/photo.php?id=1971" class="news_image"
+                    alt="news_image_01">
+                <p>Михайло Поплавський запропонував щоб його пісні стали гімном, нічого не зміниться...</p>
                 <a href="#">Детальніше</a>
             </article>
             <article>
                 <h3>Реклама:</h3>
+                <img src="https://tsvetaromat.com/img/prod/Dobavki/2023/soda-k-500-ts-new.png" class="news_image"
+                    alt="news_image_02">
                 <p>Експерти говорять, що трошки соди, допоможе збільши...</p>
                 <a href="#">Читати Далі</a>
-            </article>
-        </section>
-        <section>
-            <h2>Короткі факти:</h2>
-            <article>
-                <h3>Неймовірно:</h3>
-                <p>В китаї, завтра настане наступний день!</p>
-                <a href="#">Привітати</a>
-            </article>
-            <article>
-                <h3>Шок:</h3>
-                <p>Михайло Поплавський запропонував щоб його пісні стали гімном, нічого не зміниться...</p>
-                <a href="#">Дізнатись більше</a>
             </article>
         </section>
     </main>
