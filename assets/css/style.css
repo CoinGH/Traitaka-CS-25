@@ -60,6 +60,7 @@
     color: var(--text-light);
     text-decoration: none;
     box-shadow: 0 4px 6px rgba(255, 255, 255, 0.692);
+    -webkit-text-stroke: 0px rgb(128, 128, 128);
 }
 
 body {
