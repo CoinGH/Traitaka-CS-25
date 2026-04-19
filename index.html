@@ -16,19 +16,22 @@
 </head>
 
 <body>
-    <header>
-        <section class="hero">
+    <header class="header">
             <h1>SayGex Shop</h1>
-            <nav>
-                <ul>
+            <nav class="main-nav">
+                <ul class="nav-list">
                     <li><a href="./index.html" class="up">Головна</a></li>
                     <li><a href="#" class="up">Стрічка Новин</a></li>
                     <li><a href="#" class="up">Контакти</a></li>
-                    <li><a href="#" class="up">Menu</a></li>
+                    <li><a href="#" class="up" id="menu-open"><img src="https://png.klev.club/uploads/posts/2024-04/png-klev-club-5qiz-p-tri-poloski-png-1.png" alt="Menu" id="menu-img"></a></li>
                 </ul>
             </nav>
-        </section>
+            <a href="#" class="up"><img src="https://cdn-icons-png.flaticon.com/512/1413/1413908.png" id="cart" alt="Cart"></a>
     </header>
+    <section class="hero">
+        <p class="hero-text">Твій FPS росте - ніби від соди.</p>
+        <a href="#" class="btn-hero">Дізнатися більше</a>
+    </section>
     <main>
         <section class="prod">
             <h2 id="title2">Товари</h2>
@@ -37,14 +40,14 @@
                     <h3>Новинка:</h3>
                     <img src="https://content1.rozetka.com.ua/goods/images/big/509704617.jpg" class="product_image"
                         alt="product_image_01">
-                    <p>RTX 5090 - 189 999₴</p>
+                    <p class="lower-text">RTX 5090 - 189 999₴</p>
                     <a href="#" class="btn">Купити</a>
                 </article>
                 <article class="prod_item">
                     <h3>Пропозиція дня:</h3>
                     <img src="https://content1.rozetka.com.ua/goods/images/big/511166309.jpg" class="product_image"
                         alt="product_image_02">
-                    <p>RTX 5080 - 75 999₴</p>
+                    <p class="lower-text">RTX 5080 - 75 999₴</p>
                     <a href="#" class="btn">Купити</a>
                 </article>
             </section>
@@ -56,20 +59,20 @@
                     <h3>Терміново:</h3>
                     <img src="https://logos-ukraine.com.ua/project/photo.php?id=1971" class="news_image"
                         alt="news_image_01">
-                    <p>Михайло Поплавський запропонував щоб його пісні стали гімном, нічого не зміниться...</p>
+                    <p class="lower-text">Михайло Поплавський запропонував щоб його пісні стали гімном, нічого не зміниться...</p>
                     <a href="#">Детальніше</a>
                 </article>
                 <article class="news_item">
                     <h3>Реклама:</h3>
                     <img src="https://tsvetaromat.com/img/prod/Dobavki/2023/soda-k-500-ts-new.png" class="news_image"
                         alt="news_image_02">
-                    <p>Експерти говорять, що трошки соди, допоможе збільши...</p>
+                    <p class="lower-text">Експерти говорять, що трошки соди, допоможе збільши...</p>
                     <a href="#">Читати Далі</a>
                 </article>
             </section>
         </section>
     </main>
-    <aside>
+    <aside id="sidebar">
         <h2>Бічне меню</h2>
         <ul>
             <li><a href="./index.html">Головна</a></li>
@@ -81,17 +84,17 @@
         <section>
             <h3>Наші соцмережі:</h3>
             <ul id="social">
-                <li><a href="https://www.instagram.com/">Instagram</a></li>
-                <li><a href="https://web.telegram.org/">Telegram</a></li>
-                <li><a href="https://www.tiktok.com/">TikTok</a></li>
+                <li><a href="https://www.instagram.com/_andrew_.gh/" class="social-btn">Instagram</a></li>
+                <li><a href="https://t.me/coingh2" class="social-btn">Telegram</a></li>
+                <li><a href="https://www.tiktok.com/" class="social-btn">TikTok</a></li>
             </ul>
             <p> &copy; SayGex Shop - Всі права НЕ захищені. 2026 </p>
         </section>
         <section>
             <h3>Підпишись на нашу розсилку:</h3>
             <form action="attach">
-                <input type="email" name="email" id="email" placeholder="Ваша Пошта">
-                <input type="button" name="submit" value="Відправити">
+                <input type="email" name="email" id="email" placeholder="Ваша пошта для повістки">
+                <input type="button" name="submit" value="Відправити" id="submit">
             </form>
         </section>
     </footer>
