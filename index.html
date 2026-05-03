@@ -17,7 +17,7 @@
 
 <body>
     <header class="header">
-            <h1>SayGex Shop</h1>
+            <a href="#" class="null"><img src="./assets/img/logo.png" alt="logo" id="logo"><h1 class="logo-txt">SayGex Shop</h1></a>
             <nav class="main-nav">
                 <ul class="nav-list">
                     <li><a href="./index.html" class="up">Головна</a></li>
@@ -32,32 +32,41 @@
         <p class="hero-text">Твій FPS росте - ніби від соди.</p>
         <a href="#" class="btn-hero">Дізнатися більше</a>
     </section>
-    <main>
+    <main class="page-layout">
+        <aside class="sidebar">
+            <h2>Фільтри</h2>
+            <ul>
+                <li><input type="checkbox" id="filter1"><label for="filter1"> Вмотивовані</label></li>
+                <li><input type="checkbox" id="filter2"><label for="filter2"> Потужні</label></li>
+                <li><a href="#">Submit</a></li>
+            </ul>
+        </aside>
         <section class="prod">
             <h2 id="title2">Товари</h2>
-            <section class="prod_list">
-                <article class="prod_item">
-                    <h3>Новинка:</h3>
-                    <img src="https://content1.rozetka.com.ua/goods/images/big/509704617.jpg" class="product_image"
-                        alt="product_image_01">
-                    <p class="lower-text">RTX 5090 - 189 999₴</p>
-                    <a href="#" class="btn">Купити</a>
-                </article>
-                <article class="prod_item">
-                    <h3>Пропозиція дня:</h3>
-                    <img src="https://content1.rozetka.com.ua/goods/images/big/511166309.jpg" class="product_image"
-                        alt="product_image_02">
-                    <p class="lower-text">RTX 5080 - 75 999₴</p>
-                    <a href="#" class="btn">Купити</a>
-                </article>
-            </section>
+            <div class="products-grid">
+                    <article class="prod_item">
+                        <h3>Новинка:</h3>
+                        <img src="https://content1.rozetka.com.ua/goods/images/big/509704617.jpg" class="product_image"
+                            alt="product_image_01">
+                        <p class="lower-text">RTX 5090 - 189 999₴</p>
+                        <a href="#" class="btn">Купити</a>
+                    </article>
+                    <article class="prod_item">
+                        <h3>Пропозиція дня:</h3>
+                        <img src="https://content1.rozetka.com.ua/goods/images/big/511166309.jpg" class="product_image"
+                            alt="product_image_02">
+                        <p class="lower-text">RTX 5080 - 75 999₴</p>
+                        <a href="#" class="btn">Купити</a>
+                    </article>
+            </div>
         </section>
+    </main><main class="page-layout-news">
         <section class="news">
             <h2>Новини</h2>
             <section class="news_list">
                 <article class="news_item">
                     <h3>Терміново:</h3>
-                    <img src="https://logos-ukraine.com.ua/project/photo.php?id=1971" class="news_image"
+                    <img src="https://www.rbc.ua/static/img/f/a/facebook_com_mmpoplavskiy_kopiya_1_1300x820.jpg" class="news_image"
                         alt="news_image_01">
                     <p class="lower-text">Михайло Поплавський запропонував щоб його пісні стали гімном, нічого не зміниться...</p>
                     <a href="#">Детальніше</a>
@@ -72,14 +81,6 @@
             </section>
         </section>
     </main>
-    <aside id="sidebar">
-        <h2>Бічне меню</h2>
-        <ul>
-            <li><a href="./index.html">Головна</a></li>
-            <li><a href="#">Стрічка Новин</a></li>
-            <li><a href="#">Контакти</a></li>
-        </ul>
-    </aside>
     <footer id="footer">
         <section>
             <h3>Наші соцмережі:</h3>
