@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SayGex Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Golos+Text:wght@400..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/normalize.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/forms.css">
+    <script src="./assets/scripts/script.js"></script>
+</head>
+
+<body>
+    <header class="header">
+            <a href="./index.html" class="null"><img src="./assets/img/logo.png" alt="logo" id="logo"><h1 class="logo-txt">SayGex Shop</h1></a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="./index.html" class="up">Головна</a></li>
+                    <li><a href="#" class="up">Стрічка Новин</a></li>
+                    <li><a href="#" class="up">Контакти</a></li>
+                    <li><a href="#" class="up" id="menu-open"><img src="https://png.klev.club/uploads/posts/2024-04/png-klev-club-5qiz-p-tri-poloski-png-1.png" alt="Menu" id="menu-img"></a></li>
+                </ul>
+            </nav>
+            <a href="#" class="up"><img src="https://cdn-icons-png.flaticon.com/512/1413/1413908.png" id="cart" alt="Cart"></a>
+    </header>
+    <section class="hero">
+        <p class="hero-text">Твій FPS росте - ніби від соди.</p>
+        <a href="#" class="btn-hero">Дізнатися більше</a>
+    </section>
+    <main class="page-layout-forms">
+        <form action="#" method="post" class="checkout-form">
+            <div>
+                <h2>Оформлення замовлення</h2>
+            </div>
+            <fieldset>
+                <legend>1. Особисті дані</legend>
+                <div class="form-group">
+                  <label for="fullName">ПІБ:</label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    required
+                    placeholder="Іванов Іван Іванович"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input type="email" id="email" name="email" required placeholder="jeevacation@gmail.com"/>
+                </div>
+                <div class="form-group">
+                  <label for="phone">Телефон:</label>
+                  <!-- Валідація на 10-12 цифр + код країни -->
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    pattern="[\+]\d{2}\d{10}"
+                    placeholder="+380991234567"
+                    required
+                    title="Формат: +380XXXXXXXXX"
+                  />
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>2. Спосіб доставки</legend>
+                <label>Сервіс:</label>
+                <div class="form-radio">
+                  <input
+                    type="radio"
+                    id="deliveryNova"
+                    name="delivery"
+                    value="nova_poshta"
+                    checked
+                  />
+                  <label for="deliveryNova">Нова Пошта</label>
+                </div>
+                <div class="form-radio">
+                    <input
+                      type="radio"
+                      id="deliveryUkr"
+                      name="delivery"
+                      value="ukr_poshta"
+                    />
+                    <label for="deliveryUkr">Укр Пошта</label>
+                  </div>
+                <div class="form-radio">
+                  <input
+                    type="radio"
+                    id="deliveryCourier"
+                    name="delivery"
+                    value="courier"
+                  />
+                  <label for="deliveryCourier">Кур'єр за адресою</label>
+                </div>
+              
+                <div class="form-group">
+                  <label for="city">Місто:</label>
+                  <select id="city" name="city">
+                    <option value="kropyvnytskyi">Кропивницький</option>
+                    <option value="kyiv">Київ</option>
+                    <option value="lviv">Львів</option>
+                    <option value="odesa">Одеса</option>
+                  </select>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>3. Завершення</legend>
+                <div class="form-group">
+                    <label for="comment">Коментар до замовлення:</label>
+                    <textarea id="comment" name="comment" rows="3" placeholder="Напишіть ваші побажання..."></textarea>
+                </div>
+                <div class="end_agr">
+                    <input type="checkbox" id="agree_btn" required><label for="agree_btn"> Я погоджуюсь з правилами магазину.</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Підтвердити замовлення</button>
+              </fieldset>
+        </form>    
+    </main>
+    <footer id="footer">
+        <section>
+            <h3>Наші соцмережі:</h3>
+            <ul id="social">
+                <li><a href="https://www.instagram.com/_andrew_.gh/" class="social-btn">Instagram</a></li>
+                <li><a href="https://t.me/coingh2" class="social-btn">Telegram</a></li>
+                <li><a href="https://www.tiktok.com/" class="social-btn">TikTok</a></li>
+            </ul>
+            <p> &copy; SayGex Shop - Всі права НЕ захищені. 2026 </p>
+        </section>
+        <section>
+            <h3>Підпишись на нашу розсилку:</h3>
+            <form action="attach">
+                <input type="email" name="email" id="email" placeholder="Ваша пошта для повістки">
+                <input type="button" name="submit" value="Відправити" id="submit">
+            </form>
+        </section>
+    </footer>
+</body>
+
+</html>

@@ -1,3 +1,3 @@
 # For Educational Testing **Only**
-### Used: HTML, CSS;
+### Used: HTML, CSS, JS;
 #### ...

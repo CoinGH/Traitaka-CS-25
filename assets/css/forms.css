@@ -1,0 +1,37 @@
+  .checkout-form {
+    max-width: 600px;
+    margin: 2rem auto; /* Центрування на сторінці */
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  fieldset {
+    border: 1px solid #e5e7eb;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-family: inherit;
+  }
+  .form-group input:invalid:focus {
+    border-color: red;
+    outline: none;
+  }
+  .form-group input:valid {
+    border-color: green;
+  }
+  .end_agr {
+    padding-bottom: 10px;
+  }
