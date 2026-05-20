@@ -255,17 +255,19 @@ main {
 }
 
 .social-btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     padding: 5px 10px;
     background-color: var(--text-light);
     border-radius: 5px;
     font-weight: 400;
     box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+    gap: 7px;
 }
 
 .social-btn:hover {
     background-color: var(--text-light);
-    color: var(--text-dark);
+    color: var(--accent-color);
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
     text-decoration: none;
@@ -317,6 +319,10 @@ main {
     padding-left: 15px;
 }
 
+#menu-open {
+    display: none;
+}
+
 
 
 @media (max-width: 768px) {
@@ -325,12 +331,20 @@ main {
         gap: 15px;
     }
 
-    .header nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
+    .nav-list {
+        display: none;
     }
 
     .page-layout {
         grid-template-columns: 1fr;
+    }
+
+    #menu-open {
+        display: block;
+    }
+
+    .hero {
+        padding: 5vh 5%;
+        text-align: center;
     }
 }
