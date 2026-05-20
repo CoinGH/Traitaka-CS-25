@@ -208,6 +208,7 @@ footer ul {
     padding: 1rem 5%;
     background-color: var(--bg-color);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 20px;
 }
 
 .prod_list, .news_list {
