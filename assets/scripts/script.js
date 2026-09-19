@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const submitButton = document.getElementById("submit");
-    const emailInput = document.getElementById("email");
+    const emailInput = document.getElementById("emailnl");
 
     submitButton.addEventListener("click", () => {
         const email = emailInput.value;

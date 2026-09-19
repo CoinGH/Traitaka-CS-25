@@ -5,12 +5,12 @@
 }
 
 :root {
-    --primary-color: #B3DAFF;
-    --primary-hover: #FFE7B3;
+    --primary-color: #91e32c;
+    --primary-hover: #9bff20;
     --secondary-color: #ff8080;
     --secondary-hover: #ff3589;
     --accent-color: #005c79;
-    --text-dark: #111111;
+    --text-dark: #000000;
     --text-light: #ffffff;
     --bg-color: #ffffff;
     --font-main: 'Golos Text', sans-serif;
@@ -59,6 +59,7 @@
 .hero-text {
     color: var(--text-light);
     font-size: 2.5rem;
+    font-weight: bold;
 }
 
 body {
@@ -83,6 +84,10 @@ body {
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
     text-decoration: none;
+}
+
+.btn-hero:hover {
+    background-color: var(--primary-hover);
 }
 
 section {
@@ -163,27 +168,36 @@ a:hover {
 }
 
 .btn {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: var(--primary-color);
-    color: var(--text-dark);
+    appearance: none;
+    border: none;
+    background: transparent;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
     border-radius: 8px;
+
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+    color: #ffffff;
     text-decoration: none;
+    letter-spacing: 0.5px;
+
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.25),
+    0 2px 4px -2px rgba(99, 102, 241, 0.15);
+
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn:hover {
-    background-color: var(--primary-hover);
-    color: var(--text-light);
-    -webkit-text-stroke: 0.75px rgb(128, 128, 128);
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
-    text-decoration: none;
-    transform: scale(1.07);
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.35),
+    0 4px 6px -4px rgba(99, 102, 241, 0.2);
 }
 
 footer {
@@ -236,7 +250,7 @@ footer ul {
 }
 
 .prod_item:hover, .news_item:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .prod_item .btn, .news_item a:last-of-type {
@@ -303,7 +317,7 @@ main {
     box-shadow: 0 0px 0px rgba(37, 99, 235, 0.3);
     text-decoration: none;
     -webkit-text-stroke: 0px rgb(128, 128, 128);
-    transform: scale(1.25);
+    transform: scale(1.10);
 }
 
 .products-grid {

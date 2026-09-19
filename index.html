@@ -30,7 +30,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
             </a>
-            <a href="#" class="up">
+            <a href="./checkout.html" class="up">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="30" height="30">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                 </svg>
@@ -41,31 +41,21 @@
         <a href="#" class="btn-hero">Дізнатися більше</a>
     </div>
     <main class="page-layout">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <h2>Фільтри</h2>
             <ul>
-                <li><input type="checkbox" id="filter1"><label for="filter1"> Вмотивовані</label></li>
-                <li><input type="checkbox" id="filter2"><label for="filter2"> Потужні</label></li>
-                <li><a href="#">Submit</a></li>
+                <li><input type="checkbox" id="filter1"><label for="filter1"> Ексклюзиви</label></li>
+                <li><input type="checkbox" id="filter2"><label for="filter2"> Телефони</label></li>
+                <li><input type="checkbox" id="filter3"><label for="filter3"> Ноутбуки</label></li>
+                <li><input type="checkbox" id="filter4"><label for="filter4"> Потужні</label></li>
+                <li><input type="checkbox" id="filter5"><label for="filter5"> Мужики</label></li>
+                <li><a href="#">Застосувати</a></li>
             </ul>
         </aside>
         <section class="prod">
             <h2 id="title2">Товари</h2>
             <div class="products-grid">
-                    <article class="prod_item">
-                        <h3>Новинка:</h3>
-                        <img src="https://content1.rozetka.com.ua/goods/images/big/509704617.jpg" class="product_image"
-                            alt="product_image_01">
-                        <p class="lower-text">RTX 5090 - 189 999₴</p>
-                        <a href="./checkout.html" class="btn">Купити</a>
-                    </article>
-                    <article class="prod_item">
-                        <h3>Пропозиція дня:</h3>
-                        <img src="https://content1.rozetka.com.ua/goods/images/big/511166309.jpg" class="product_image"
-                            alt="product_image_02">
-                        <p class="lower-text">RTX 5080 - 75 999₴</p>
-                        <a href="./checkout.html" class="btn">Купити</a>
-                    </article>
+
             </div>
         </section>
     </main>
@@ -75,17 +65,17 @@
             <div class="news_list">
                 <article class="news_item">
                     <h3>Терміново:</h3>
-                    <img src="https://www.rbc.ua/static/img/f/a/facebook_com_mmpoplavskiy_kopiya_1_1300x820.jpg" class="news_image"
+                    <img src="assets/img/news_pics/news0.jpg" class="news_image"
                         alt="news_image_01">
                     <p class="lower-text">Михайло Поплавський запропонував щоб його пісні стали гімном, нічого не зміниться...</p>
-                    <a href="#">Детальніше</a>
+                    <a href="#" class="btn">Детальніше</a>
                 </article>
                 <article class="news_item">
                     <h3>Реклама:</h3>
-                    <img src="https://tsvetaromat.com/img/prod/Dobavki/2023/soda-k-500-ts-new.png" class="news_image"
+                    <img src="assets/img/news_pics/news1.webp" class="news_image"
                         alt="news_image_02">
                     <p class="lower-text">Експерти говорять, що трошки соди, допоможе збільши...</p>
-                    <a href="#">Читати Далі</a>
+                    <a href="#" class="btn">Читати Далі</a>
                 </article>
             </div>
         </section>
@@ -126,6 +116,7 @@
             </form>
         </section>
     </footer>
+    <script src="assets/scripts/main.js" type="module"></script>
 </body>
 
 </html>
