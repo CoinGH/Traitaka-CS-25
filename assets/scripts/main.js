@@ -43,22 +43,6 @@ const products = [
     }
 ];
 
-const container = document.querySelector(".products-grid");
-
-const htmlString = products
-    .map((product) => {
-        return `
-        <article class="prod_item">
-            <img src="${product.image}" alt="${product.title}" class="product_image">
-            <h3>${product.title}</h3>
-            <p class="lower-text">${product.price} грн</p>
-            <button class="btn" data-id="${product.id}">Купити</button>
-        </article>
-    `;
-    }).join("");
-
-container.innerHTML = htmlString;
-
 let cart = [];
 document.querySelector('.products-grid').addEventListener('click', (event) => {
     if (event.target.classList.contains('btn')) {
@@ -91,3 +75,40 @@ function updateUI() {
 function calculateTotal() {
     return cart.reduce((total, item) => total + item.productPrice * item.quantity, 0);
 }
+function fetchProducts() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(products);
+            // reject(new Error("Не вдалося підключитися до бази даних"));
+        }, 1500);
+    });
+}
+
+async function initShop() {
+    const loader = document.getElementById("loader");
+    const container = document.querySelector(".products-grid");
+
+    loader.classList.remove("hidden");
+    container.innerHTML = "";
+
+    try {
+        const data = await fetchProducts();
+
+        loader.classList.add("hidden");
+
+        const htmlString = data
+            .map((product) => `
+                <article class="prod_item">
+                    <img src="${product.image}" alt="${product.title}" class="product_image">
+                    <h3>${product.title}</h3>
+                    <p class="lower-text">${product.price} грн</p>
+                    <button class="btn" data-id="${product.id}">Купити</button>
+                </article>`).join("");
+
+        container.innerHTML = htmlString;
+    } catch (error) {
+        loader.classList.add("hidden");
+        container.innerHTML = `<p class="error">Помилка: ${error.message}</p>`;
+    }
+}
+initShop();
