@@ -1,4 +1,4 @@
-const products = [
+/* const products = [
     {
         id: 0,
         title: "Ноутбук Apple MacBook Pro 16",
@@ -42,12 +42,13 @@ const products = [
         image: "assets/img/item_pics/item5.png",
     }
 ];
-
+*/
+let globalStoreProducts = [];
 let cart = [];
 document.querySelector('.products-grid').addEventListener('click', (event) => {
     if (event.target.classList.contains('btn')) {
         const productId = Number(event.target.dataset.id);
-        const selectedProduct = products.find((p) => p.id === productId);
+        const selectedProduct = globalStoreProducts.find((p) => p.id === productId);
         addToCart(selectedProduct);
     }
 });
@@ -63,16 +64,24 @@ function addToCart(product) {
 }
 
 function calculateTotal() {
-    return cart.reduce((total, item) => total + item.productPrice * item.quantity, 0);
+    return (cart.reduce((total, item) => total + item.productPrice * item.quantity, 0).toFixed(2));
 }
 
-function fetchProducts() {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(products);
-            // reject(new Error("Не вдалося підключитися до бази даних"));
-        }, 1500);
-    });
+async function fetchProducts() {
+    try {
+        const response = await fetch(
+            "https://fakestoreapi.com/products?limit=8",
+        );
+
+        if (!response.ok) {
+            throw new Error(`HTTP помилка: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Помилка завантаження товарів:", error.message);
+        throw error;
+    }
 }
 
 async function initShop() {
@@ -85,18 +94,18 @@ async function initShop() {
     try {
         const data = await fetchProducts();
 
+        globalStoreProducts = data;
+
         loader.classList.add("hidden");
 
-        const htmlString = data
+        container.innerHTML = data
             .map((product) => `
                 <article class="prod_item">
                     <img src="${product.image}" alt="${product.title}" class="product_image">
                     <h3>${product.title}</h3>
-                    <p class="lower-text">${product.price} грн</p>
+                    <p class="lower-text">$${product.price}</p>
                     <button class="btn" data-id="${product.id}">Купити</button>
                 </article>`).join("");
-
-        container.innerHTML = htmlString;
     } catch (error) {
         loader.classList.add("hidden");
         container.innerHTML = `<p class="error">Помилка: ${error.message}</p>`;
@@ -167,7 +176,7 @@ function renderCartItems() {
                 <div class="cart-item">
                     <h3>${item.productTitle}</h3>
                     <img src="${item.productImage}" alt="${item.productTitle}" class="cart-item-image">
-                    <p class="lower-text">${item.productPrice} грн</p>
+                    <p class="lower-text">$${item.productPrice}</p>
                     <div class="cart-counter">
                         <button type="button" class="counter-btn" data-action="decrease" data-id="${item.productId}">
                         <svg viewBox="0 0 45 45" class="counter-icon">
