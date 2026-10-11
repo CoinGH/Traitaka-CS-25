@@ -51,30 +51,21 @@ document.querySelector('.products-grid').addEventListener('click', (event) => {
         addToCart(selectedProduct);
     }
 });
+
 function addToCart(product) {
     const existingItem = cart.find((item) => item.productId === product.id);
 
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        cart.push({productId: product.id, productTitle: product.title, productPrice: product.price, quantity: 1});
+        cart.push({productId: product.id, productImage: product.image, productTitle: product.title, productPrice: product.price, quantity: 1});
     }
-    updateUI();
 }
-function updateUI() {
-    const cartCounter = document.querySelector('.cart-counter');
-    const cartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-    if (cartCounter) {
-        cartCounter.textContent = cartItems;
-    }
-
-    console.log("Кошик: ", cart);
-    console.log("Загальна сума: ", calculateTotal(), "грн");
-}
 function calculateTotal() {
     return cart.reduce((total, item) => total + item.productPrice * item.quantity, 0);
 }
+
 function fetchProducts() {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -111,4 +102,115 @@ async function initShop() {
         container.innerHTML = `<p class="error">Помилка: ${error.message}</p>`;
     }
 }
+
+
+// Modal
+
+const cartItemsContainer = document.getElementById("cartItemsContainer");
+const cartCount = document.getElementById("cartTotalSum");
+
+cartItemsContainer.addEventListener('change', (event) => {
+    if (event.target.classList.contains('cart-item-q')) {
+        const input = event.target;
+        let newQuantity = Math.round(Number(input.value));
+        const productId = Number(event.target.dataset.id);
+
+        if (isNaN(newQuantity)) {
+            return;
+        }
+
+        if (newQuantity <= 0) {
+            cart = cart.filter((item) => item.productId !== productId);
+            renderCartItems();
+            return;
+        }
+
+        updateItemQuantity(productId, newQuantity);
+    }
+});
+
+cartItemsContainer.addEventListener('click', (event) => {
+    const btn = event.target.closest('.counter-btn');
+    if (!btn) return;
+
+    const productId = Number(btn.dataset.id);
+    const action = btn.dataset.action;
+    const item = cart.find((p) => p.productId === productId);
+
+    if (!item) return;
+
+    if (action === 'increase') {
+        updateItemQuantity(productId, item.quantity + 1);
+    } else if (action === 'decrease') {
+        if (item.quantity > 1) {
+            updateItemQuantity(productId, item.quantity - 1);
+        } else {
+            cart = cart.filter((p) => p.productId !== productId);
+            renderCartItems();
+        }
+    }
+});
+
+function updateItemQuantity(productId, newQuantity) {
+    const existingItem = cart.find((item) => item.productId === productId);
+    existingItem.quantity = newQuantity;
+    renderCartItems();
+}
+
+function renderCartItems() {
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = "<p>Кошик порожній і йому дуже сумно...</p>"
+        cartCount.innerText = "0";
+    } else {
+        const cartItems = cart
+            .map((item) => `
+                <div class="cart-item">
+                    <h3>${item.productTitle}</h3>
+                    <img src="${item.productImage}" alt="${item.productTitle}" class="cart-item-image">
+                    <p class="lower-text">${item.productPrice} грн</p>
+                    <div class="cart-counter">
+                        <button type="button" class="counter-btn" data-action="decrease" data-id="${item.productId}">
+                        <svg viewBox="0 0 45 45" class="counter-icon">
+                            <circle cx="22.5" cy="22.5" r="20" fill="#ef4444" />
+                            <path d="M 12 22.5 L 33 22.5" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+                        </svg>
+                        </button>
+                        <input type="number" class="cart-item-q" value="${item.quantity}" min="0" step="1" data-id="${item.productId}">
+                        <button type="button" class="counter-btn" data-action="increase" data-id="${item.productId}">
+                        <svg viewBox="0 0 45 45" class="counter-icon">
+                            <circle cx="22.5" cy="22.5" r="20" fill="#22c55e" />
+                            <path d="M 22.5 12 L 22.5 33 M 12 22.5 L 33 22.5" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+                        </svg>
+                        </button>
+                    </div>
+                </div>
+            `).join("");
+        cartItemsContainer.innerHTML = cartItems;
+        cartCount.innerText = calculateTotal();
+    }
+}
+
+const cartButton = document.querySelector(".btn-cart");
+const cartOverlay = document.getElementById("cartOverlay");
+const closeBtn = document.getElementById("closeCartBtn");
+
+function openCartModal(event) {
+    event.preventDefault();
+    cartOverlay.classList.remove("hidden");
+    renderCartItems();
+}
+
+function closeCartModal() {
+    cartOverlay.classList.add("hidden");
+}
+
+cartButton.addEventListener("click", openCartModal);
+closeBtn.addEventListener("click", closeCartModal);
+
+cartOverlay.addEventListener("click", (event) => {
+    if (event.target === cartOverlay) {
+        closeCartModal();
+    }
+});
+
 initShop();
