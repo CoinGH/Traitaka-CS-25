@@ -45,8 +45,10 @@
 */
 let globalStoreProducts = [];
 let cart = [];
-document.querySelector('.products-grid').addEventListener('click', (event) => {
-    if (event.target.classList.contains('btn')) {
+
+const productsContainer = document.querySelector('.products-grid');
+productsContainer.addEventListener('click', (event) => {
+    if (event.target.classList.contains('btn-buy')) {
         const productId = Number(event.target.dataset.id);
         const selectedProduct = globalStoreProducts.find((p) => p.id === productId);
         addToCart(selectedProduct);
@@ -100,11 +102,11 @@ async function initShop() {
 
         container.innerHTML = data
             .map((product) => `
-                <article class="prod_item">
-                    <img src="${product.image}" alt="${product.title}" class="product_image">
+                <article class="prod_item" draggable="true" data-id="${product.id}">
+                    <img src="${product.image}" alt="${product.title}" class="product_image" draggable="false">
                     <h3>${product.title}</h3>
                     <p class="lower-text">$${product.price}</p>
-                    <button class="btn" data-id="${product.id}">Купити</button>
+                    <button class="btn btn-buy" data-id="${product.id}">Купити</button>
                 </article>`).join("");
     } catch (error) {
         loader.classList.add("hidden");
@@ -175,7 +177,7 @@ function renderCartItems() {
             .map((item) => `
                 <div class="cart-item">
                     <h3>${item.productTitle}</h3>
-                    <img src="${item.productImage}" alt="${item.productTitle}" class="cart-item-image">
+                    <img src="${item.productImage}" alt="${item.productTitle}" class="cart-item-image" draggable="false">
                     <p class="lower-text">$${item.productPrice}</p>
                     <div class="cart-counter">
                         <button type="button" class="counter-btn" data-action="decrease" data-id="${item.productId}">
@@ -220,6 +222,60 @@ cartOverlay.addEventListener("click", (event) => {
     if (event.target === cartOverlay) {
         closeCartModal();
     }
+});
+
+// Drag-n-Drop
+
+const favBtn = document.getElementById("favorites-btn");
+const favZone = document.getElementById("favorites-zone");
+let favCount = 0;
+
+productsContainer.addEventListener('dragstart', (event) => {
+    if (event.target.classList.contains('prod_item')) {
+        event.dataTransfer.setData('text/plain', event.target.dataset.id);
+        event.target.classList.add('dragging');
+
+        favBtn.classList.add('hidden');
+        favZone.classList.remove('hidden');
+    }
+});
+
+productsContainer.addEventListener('dragend', (event) => {
+    if (event.target.classList.contains('prod_item')) {
+        event.target.classList.remove('dragging');
+
+        favBtn.classList.remove('hidden');
+        favZone.classList.add('hidden');
+    }
+});
+
+const favoritesZone = document.getElementById('favorites-zone');
+
+// Дозволяємо кидання! Без preventDefault() подія drop не спрацює
+favoritesZone.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    favoritesZone.classList.add('drag-over'); // Підсвічуємо зону, коли над нею тягнуть товар
+});
+
+// Коли курсор залишає зону - прибираємо підсвітку
+favoritesZone.addEventListener('dragleave', () => {
+    favoritesZone.classList.remove('drag-over');
+});
+
+// Обробка моменту "кидання" (відпускання миші)
+favoritesZone.addEventListener('drop', (event) => {
+    event.preventDefault();
+    favoritesZone.classList.remove('drag-over');
+    const favCounter = document.getElementById("fav-count");
+
+    // Дістаємо збережений ID товару з "буфера обміну"
+    const productId = event.dataTransfer.getData('text/plain');
+
+    // Візуалізуємо дію (в реальному проекті тут буде додавання до масиву favorites)
+    favoritesZone.innerHTML += `<div class="fav-item">Товар #${productId}</div>`;
+    favCount += 1;
+    favCounter.innerText = `${favCount}`;
+
 });
 
 initShop();

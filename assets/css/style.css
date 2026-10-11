@@ -223,6 +223,9 @@ footer ul {
     background-color: var(--bg-color);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .prod_list, .news_list {
@@ -486,6 +489,45 @@ main {
 
 .cart-item-q:focus {
     border-color: #3b82f6;
+}
+
+.favorites-zone {
+    border: red dashed 10px;
+    padding: 25px 10px;
+    display: flex;
+}
+.right-panel {
+    display: flex;
+    gap: 20px;
+}
+
+.favorites-btn {
+    position: relative;
+}
+
+.dragging { opacity: 0.5; }
+.drag-over { background: #ffe5e5; }
+
+.fav-count {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    position: absolute;
+    width: 24px;
+    height: 24px;
+
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+    line-height: 1;
+
+    top: -6px;
+    right: -6px;
 }
 
 
