@@ -531,6 +531,77 @@ main {
 }
 
 
+/* ---- ЛР №15: бейдж кошика + форма замовлення в модальному вікні ---- */
+.btn-cart {
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-color);
+    color: var(--text-light);
+    border-radius: 11px;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.no-products {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #666;
+}
+
+.order-form {
+    margin-top: 15px;
+    text-align: left;
+}
+
+.order-form .form-row {
+    margin-bottom: 12px;
+}
+
+.order-form label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.order-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+}
+
+.input-error {
+    display: block;
+    min-height: 1em;
+    color: red;
+    font-size: 13px;
+}
+
+.btn-order {
+    width: 100%;
+    padding: 10px 20px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-order:hover {
+    background: #218838;
+}
+
 
 @media (max-width: 768px) {
     .header {

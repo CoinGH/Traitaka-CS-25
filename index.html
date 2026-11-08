@@ -41,6 +41,7 @@
                     <p> Перетягніть сюди товари в Улюблене</p>
                 </div>
                 <a href="#" class="up btn-cart">
+                    <span class="cart-badge" id="cartCountBadge">0</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="32" height="32">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                     </svg>
@@ -68,6 +69,10 @@
             <div class="loader-container" id="loader">
                 <div class="spinner"></div>
                 <p>Завантаження товарів...</p>
+            </div>
+            <div class="search-bar" style="margin: 20px 0; display: flex; gap: 12px; align-items: center;">
+                <input type="text" id="searchInput" placeholder="Почніть вводити назву товару..." style="padding: 10px; width: 320px; border: 1px solid #ccc; border-radius: 6px;">
+                <span id="searchResultCount" style="color: #666; font-size: 14px;"></span>
             </div>
             <div class="products-grid">
 
@@ -132,9 +137,7 @@
         </section>
     </footer>
 
-    <!-- Темний напівпрозорий фон, який перекриває весь сайт -->
     <div class="modal-overlay hidden" id="cartOverlay">
-        <!-- Саме біле вікно кошика по центру -->
         <div class="modal-window">
             <div class="modal-header">
                 <h2>Ваш Кошик</h2>
@@ -147,9 +150,33 @@
 
             <div class="modal-footer">
                 <h3>Разом: $<span id="cartTotalSum">0</span></h3>
-                <a href="checkout.html" class="btn btn-primary" id="checkoutBtn"
-                >Оформити замовлення</a
-                >
+
+                <form id="checkoutOrderForm" class="order-form" novalidate>
+                    <div class="form-row">
+                        <label for="clientName">ПІБ покупця:</label>
+                        <input type="text" id="clientName" name="clientName" placeholder="Коваленко Олександр Сергійович" required>
+                        <span class="input-error" id="nameError"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="clientPhone">Номер телефону (+380...):</label>
+                        <input type="tel" id="clientPhone" name="clientPhone" placeholder="+38 (097) 123-45-67" required>
+                        <span class="input-error" id="phoneError"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="clientEmail">Електронна пошта:</label>
+                        <input type="email" id="clientEmail" name="clientEmail" placeholder="olexandr@example.com" required>
+                        <span class="input-error" id="emailError"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="orderPromo">Промокод (якщо є):</label>
+                        <input type="text" id="orderPromo" name="orderPromo" placeholder="Введіть SALE10 для знижки 10%">
+                    </div>
+
+                    <button type="submit" id="btnPlaceOrder" class="btn-order">Підтвердити замовлення</button>
+                </form>
             </div>
         </div>
     </div>
