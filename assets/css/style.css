@@ -17,6 +17,19 @@
     --section-gap: 3vh
 }
 
+body.dark-theme {
+    --primary-color: #91e32c;
+    --primary-hover: #9bff20;
+    --secondary-color: #ff8080;
+    --secondary-hover: #ff3589;
+    --accent-color: #005c79;
+    --text-dark: #000000;
+    --text-light: #ffffff;
+    --bg-color: #ffffff;
+    --font-main: 'Golos Text', sans-serif;
+    --section-gap: 3vh
+}
+
 .hero {
     height: 65vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://wallpapercave.com/wp/wp14319833.jpg');

@@ -43,28 +43,38 @@
     }
 ];
 */
+const CART_STORAGE_KEY = 'saygexshop_cart';
 let globalStoreProducts = [];
-let cart = [];
+let cart = loadCartFromStorage();
 
 const productsContainer = document.querySelector('.products-grid');
 productsContainer.addEventListener('click', (event) => {
     if (event.target.classList.contains('btn-buy')) {
         const productId = Number(event.target.dataset.id);
-        const selectedProduct = globalStoreProducts.find((p) => p.id === productId);
-        addToCart(selectedProduct);
+        addToCart(productId);
     }
 });
 
-function addToCart(product) {
-    const existingItem = cart.find((item) => item.productId === product.id);
+function addToCart(productId) {
+    const product = globalStoreProducts.find(item => item.id === Number(productId));
+    if (!product) return;
 
-    if (existingItem) {
-        existingItem.quantity += 1;
+    const existingCartItem = cart.find(item => item.productId === product.id);
+
+    if (existingCartItem) {
+        existingCartItem.quantity += 1;
     } else {
         cart.push({productId: product.id, productImage: product.image, productTitle: product.title, productPrice: product.price, quantity: 1});
     }
 
+    // Обов'язково фіксуємо зміни у localStorage:
+    saveCartToStorage();
+
+    // Оновлюємо UI (бейдж кількості та підсумкову суму)
     updateCartSummary();
+    if (typeof renderCartItems === 'function') {
+        renderCartItems();
+    }
 }
 
 function updateCartSummary() {
@@ -185,6 +195,8 @@ cartItemsContainer.addEventListener('click', (event) => {
 function updateItemQuantity(productId, newQuantity) {
     const existingItem = cart.find((item) => item.productId === productId);
     existingItem.quantity = newQuantity;
+    saveCartToStorage();
+    updateCartSummary();
     renderCartItems();
 }
 
@@ -219,6 +231,16 @@ function renderCartItems() {
     }
 
     updateCartSummary();
+}
+
+function clearCart() {
+    cart = [];
+    // Очищаємо запис кошика з localStorage
+    localStorage.removeItem(CART_STORAGE_KEY);
+    updateCartSummary();
+    if (typeof renderCartItems === 'function') {
+        renderCartItems();
+    }
 }
 
 const cartButton = document.querySelector(".btn-cart");
@@ -411,10 +433,163 @@ function completeCheckoutProcess(name, phone, email, promo) {
     console.log("Замовлення сформовано (JSON Payload):", orderData);
     alert(`Дякуємо, ${name}! Замовлення на суму $${finalAmount.toFixed(2)} успішно прийнято.`);
 
-    cart = [];
-    renderCartItems();
+    clearCart();
     orderForm.reset();
     closeCartModal();
+}
+
+
+// THEME
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const THEME_STORAGE_KEY = 'saygexshop_theme';
+
+// 1. Функція встановлення та синхронізації теми
+function applyTheme(themeName) {
+    const themeIcon = themeToggleBtn?.querySelector('.theme-icon');
+
+    if (themeName === 'dark') {
+        document.body.classList.add('dark-theme');
+        if (themeIcon) themeIcon.textContent = '☀️';
+    } else {
+        document.body.classList.remove('dark-theme');
+        if (themeIcon) themeIcon.textContent = '🌙';
+    }
+}
+
+// 2. Ініціалізація теми при старті сторінки (перевірка сховища та системних налаштувань ОС)
+function initTheme() {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+
+    if (savedTheme) {
+        // Якщо користувач уже вибирав тему раніше — застосовуємо її
+        applyTheme(savedTheme);
+    } else {
+        // Якщо вибору немає — перевіряємо системне налаштування темної теми в ОС користувача
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(prefersDark ? 'dark' : 'light');
+    }
+}
+
+// 3. Обробник кліку на перемикач
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+        const isCurrentlyDark = document.body.classList.contains('dark-theme');
+        const newTheme = isCurrentlyDark ? 'light' : 'dark';
+
+        applyTheme(newTheme);
+        // Зберігаємо вибір у localStorage для довготривалої пам'яті
+        localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    });
+}
+
+initTheme();
+
+// 1. Безпечне зчитування кошика з localStorage із захистом від пошкодженого JSON
+function loadCartFromStorage() {
+    const rawData = localStorage.getItem(CART_STORAGE_KEY);
+    if (!rawData) {
+        return []; // якщо сховище порожнє — повертаємо чистий масив
+    }
+
+    try {
+        const parsedCart = JSON.parse(rawData);
+        // Переконуємося, що в сховищі дійсно зберігся масив, а не довільний об'єкт чи примітив
+        if (Array.isArray(parsedCart)) {
+            return parsedCart;
+        }
+        return [];
+    } catch (error) {
+        console.error('Помилка парсингу кошика з localStorage:', error);
+        // У разі пошкодження формату безпечно очищаємо некоректний запис
+        localStorage.removeItem(CART_STORAGE_KEY);
+        return [];
+    }
+}
+
+// 2. Серіалізація та запис актуального масиву cart у сховище
+function saveCartToStorage() {
+    try {
+        const serializedData = JSON.stringify(cart);
+        localStorage.setItem(CART_STORAGE_KEY, serializedData);
+    } catch (error) {
+        console.error('Помилка збереження кошика у Web Storage:', error);
+    }
+}
+
+
+//Favourites
+
+const FAVORITES_STORAGE_KEY = 'saygexshop_favorites';
+
+// 1. Завантаження масиву ID улюблених товарів
+function loadFavoritesFromStorage() {
+    try {
+        const rawData = localStorage.getItem(FAVORITES_STORAGE_KEY);
+        return rawData ? JSON.parse(rawData) : [];
+    } catch (error) {
+        console.error('Помилка завантаження Favorites:', error);
+        return [];
+    }
+}
+
+// Глобальний масив збережених ID улюблених товарів:
+let favoriteProductIds = loadFavoritesFromStorage();
+
+// 2. Збереження масиву ID у сховище
+function saveFavoritesToStorage() {
+    localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteProductIds));
+}
+
+// 3. Функція візуального відображення зони улюбленого
+function renderFavoritesZone() {
+    const favoritesZone = document.getElementById('favorites-zone');
+    if (!favoritesZone) return;
+
+    if (favoriteProductIds.length === 0) {
+        favoritesZone.innerHTML = '<p class="empty-fav">Перетягніть сюди товари в Улюблене</p>';
+        return;
+    }
+
+    // Знаходимо повні об'єкти товарів із завантаженого каталогу
+    const favoriteItems = globalStoreProducts.filter(product => favoriteProductIds.includes(product.id));
+
+    favoritesZone.innerHTML = `
+    <h4>Обрані товари (${favoriteItems.length}):</h4>
+    <div class="fav-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+      ${favoriteItems.map(item => `
+        <span class="fav-chip" style="background: var(--bg-primary); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+          ${item.title.substring(0, 18)}...
+          <button class="btn-remove-fav" data-id="${item.id}" style="border:none; background:none; cursor:pointer; color:red;">×</button>
+        </span>
+      `).join('')}
+    </div>
+  `;
+}
+
+// 4. Оновлення обробника події Drop з ЛР №14:
+if (favoritesZone) {
+    favoritesZone.addEventListener('dragover', (event) => event.preventDefault());
+
+    favoritesZone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const productId = Number(event.dataTransfer.getData('text/plain'));
+
+        if (productId && !favoriteProductIds.includes(productId)) {
+            favoriteProductIds.push(productId);
+            saveFavoritesToStorage();
+            renderFavoritesZone();
+        }
+    });
+
+    // Видалення товару з улюбленого за кліком на хрестик (делегування)
+    favoritesZone.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-remove-fav')) {
+            const idToRemove = Number(event.target.dataset.id);
+            favoriteProductIds = favoriteProductIds.filter(id => id !== idToRemove);
+            saveFavoritesToStorage();
+            renderFavoritesZone();
+        }
+    });
 }
 
 initShop();
