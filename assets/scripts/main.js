@@ -270,7 +270,6 @@ cartOverlay.addEventListener("click", (event) => {
 
 const favBtn = document.getElementById("favorites-btn");
 const favZone = document.getElementById("favorites-zone");
-let favCount = 0;
 
 productsContainer.addEventListener('dragstart', (event) => {
     if (event.target.classList.contains('prod_item')) {
@@ -303,23 +302,6 @@ favoritesZone.addEventListener('dragover', (event) => {
 favoritesZone.addEventListener('dragleave', () => {
     favoritesZone.classList.remove('drag-over');
 });
-
-// Обробка моменту "кидання" (відпускання миші)
-favoritesZone.addEventListener('drop', (event) => {
-    event.preventDefault();
-    favoritesZone.classList.remove('drag-over');
-    const favCounter = document.getElementById("fav-count");
-
-    // Дістаємо збережений ID товару з "буфера обміну"
-    const productId = event.dataTransfer.getData('text/plain');
-
-    // Візуалізуємо дію (в реальному проекті тут буде додавання до масиву favorites)
-    favoritesZone.innerHTML += `<div class="fav-item">Товар #${productId}</div>`;
-    favCount += 1;
-    favCounter.innerText = `${favCount}`;
-
-});
-
 
 const searchInput = document.getElementById('searchInput');
 const searchResultCount = document.getElementById('searchResultCount');
@@ -525,7 +507,9 @@ const FAVORITES_STORAGE_KEY = 'saygexshop_favorites';
 function loadFavoritesFromStorage() {
     try {
         const rawData = localStorage.getItem(FAVORITES_STORAGE_KEY);
-        return rawData ? JSON.parse(rawData) : [];
+        const parsed = rawData ? JSON.parse(rawData) : [];
+        // як і для кошика: переконуємось, що у сховищі справді масив
+        return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
         console.error('Помилка завантаження Favorites:', error);
         return [];
@@ -540,56 +524,80 @@ function saveFavoritesToStorage() {
     localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteProductIds));
 }
 
-// 3. Функція візуального відображення зони улюбленого
-function renderFavoritesZone() {
-    const favoritesZone = document.getElementById('favorites-zone');
-    if (!favoritesZone) return;
+// Лічильник біля сердечка завжди беремо з масиву — одне джерело правди
+function updateFavCounter() {
+    document.getElementById('fav-count').textContent = favoriteProductIds.length;
+}
 
-    if (favoriteProductIds.length === 0) {
-        favoritesZone.innerHTML = '<p class="empty-fav">Перетягніть сюди товари в Улюблене</p>';
+// 3. Список улюбленого — у модальному вікні (зона #favorites-zone видима лише під час перетягування)
+const favoritesOverlay = document.getElementById('favoritesOverlay');
+const favoritesList = document.getElementById('favoritesList');
+
+function renderFavoritesList() {
+    // Знаходимо повні об'єкти товарів за збереженими ID
+    const favoriteItems = globalStoreProducts.filter(product => favoriteProductIds.includes(product.id));
+
+    if (favoriteItems.length === 0) {
+        favoritesList.innerHTML = '<p>Тут поки порожньо. Перетягніть товар на сердечко.</p>';
         return;
     }
 
-    // Знаходимо повні об'єкти товарів із завантаженого каталогу
-    const favoriteItems = globalStoreProducts.filter(product => favoriteProductIds.includes(product.id));
-
-    favoritesZone.innerHTML = `
-    <h4>Обрані товари (${favoriteItems.length}):</h4>
-    <div class="fav-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
-      ${favoriteItems.map(item => `
-        <span class="fav-chip" style="background: var(--bg-primary); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
-          ${item.title.substring(0, 18)}...
-          <button class="btn-remove-fav" data-id="${item.id}" style="border:none; background:none; cursor:pointer; color:red;">×</button>
-        </span>
-      `).join('')}
-    </div>
-  `;
+    favoritesList.innerHTML = favoriteItems
+        .map((item) => `
+            <div class="fav-row">
+                <img src="${item.image}" alt="${item.title}" draggable="false">
+                <h3>${item.title}</h3>
+                <p class="lower-text">$${item.price}</p>
+                <button type="button" class="btn-remove-fav" data-id="${item.id}" aria-label="Видалити з улюбленого">&times;</button>
+            </div>`).join('');
 }
 
-// 4. Оновлення обробника події Drop з ЛР №14:
-if (favoritesZone) {
-    favoritesZone.addEventListener('dragover', (event) => event.preventDefault());
-
-    favoritesZone.addEventListener('drop', (event) => {
-        event.preventDefault();
-        const productId = Number(event.dataTransfer.getData('text/plain'));
-
-        if (productId && !favoriteProductIds.includes(productId)) {
-            favoriteProductIds.push(productId);
-            saveFavoritesToStorage();
-            renderFavoritesZone();
-        }
-    });
-
-    // Видалення товару з улюбленого за кліком на хрестик (делегування)
-    favoritesZone.addEventListener('click', (event) => {
-        if (event.target.classList.contains('btn-remove-fav')) {
-            const idToRemove = Number(event.target.dataset.id);
-            favoriteProductIds = favoriteProductIds.filter(id => id !== idToRemove);
-            saveFavoritesToStorage();
-            renderFavoritesZone();
-        }
-    });
+function openFavoritesModal(event) {
+    event.preventDefault();
+    renderFavoritesList();
+    favoritesOverlay.classList.remove('hidden');
 }
+
+function closeFavoritesModal() {
+    favoritesOverlay.classList.add('hidden');
+}
+
+favBtn.addEventListener('click', openFavoritesModal);
+document.getElementById('closeFavoritesBtn').addEventListener('click', closeFavoritesModal);
+
+favoritesOverlay.addEventListener('click', (event) => {
+    if (event.target === favoritesOverlay) {
+        closeFavoritesModal();
+    }
+});
+
+// 4. Drop: додаємо ID у масив (без дублів), зберігаємо, оновлюємо лічильник
+favoritesZone.addEventListener('drop', (event) => {
+    event.preventDefault();
+    favoritesZone.classList.remove('drag-over');
+
+    const productId = Number(event.dataTransfer.getData('text/plain'));
+
+    if (productId && !favoriteProductIds.includes(productId)) {
+        favoriteProductIds.push(productId);
+        saveFavoritesToStorage();
+        updateFavCounter();
+    }
+});
+
+// 5. Видалення з улюбленого за кліком на хрестик (делегування на контейнер списку)
+favoritesList.addEventListener('click', (event) => {
+    const removeBtn = event.target.closest('.btn-remove-fav');
+    if (!removeBtn) return;
+
+    const idToRemove = Number(removeBtn.dataset.id);
+    favoriteProductIds = favoriteProductIds.filter(id => id !== idToRemove);
+    saveFavoritesToStorage();
+    updateFavCounter();
+    renderFavoritesList();
+});
+
+// 6. Одразу при старті показуємо збережену кількість
+updateFavCounter();
 
 initShop();
