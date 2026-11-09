@@ -381,6 +381,7 @@ function validateCheckoutForm(name, phone, email) {
 function completeCheckoutProcess(name, phone, email, promo) {
     if (cart.length === 0) {
         alert("Ваш кошик порожній! Спочатку додайте товари до кошика.");
+        sessionStorage.removeItem(DRAFT_ORDER_KEY);
         return;
     }
 
@@ -599,5 +600,80 @@ favoritesList.addEventListener('click', (event) => {
 
 // 6. Одразу при старті показуємо збережену кількість
 updateFavCounter();
+
+// autosaving
+
+const DRAFT_ORDER_KEY = 'techshop_order_draft';
+
+// 1. Функція збереження поточного стану полів форми у sessionStorage
+function saveOrderFormDraft() {
+    if (!orderForm) return;
+
+    const draftData = {
+        clientName: document.getElementById('clientName')?.value || '',
+        clientPhone: document.getElementById('clientPhone')?.value || '',
+        clientEmail: document.getElementById('clientEmail')?.value || '',
+        orderPromo: document.getElementById('orderPromo')?.value || ''
+    };
+
+    sessionStorage.setItem(DRAFT_ORDER_KEY, JSON.stringify(draftData));
+}
+
+// 2. Функція відновлення полів форми з sessionStorage при відкритті
+function restoreOrderFormDraft() {
+    const rawDraft = sessionStorage.getItem(DRAFT_ORDER_KEY);
+    if (!rawDraft || !orderForm) return;
+
+    try {
+        const draft = JSON.parse(rawDraft);
+
+        if (draft.clientName) document.getElementById('clientName').value = draft.clientName;
+        if (draft.clientPhone) document.getElementById('clientPhone').value = draft.clientPhone;
+        if (draft.clientEmail) document.getElementById('clientEmail').value = draft.clientEmail;
+        if (draft.orderPromo) document.getElementById('orderPromo').value = draft.orderPromo;
+    } catch (error) {
+        console.error('Помилка відновлення чернетки замовлення:', error);
+    }
+}
+
+// 3. Відстеження введення даних користувачем у формі (подія input з делегуванням)
+if (orderForm) {
+    orderForm.addEventListener('input', () => {
+        // Автоматично записуємо кожну зміну в sessionStorage
+        saveOrderFormDraft();
+    });
+}
+
+// 4. Очищення чернетки після успішного оформлення покупки (всередині completeCheckoutProcess)
+
+
+// cross tabs sync
+
+// Слухач синхронізації між паралельними вкладками одного браузера
+window.addEventListener('storage', (event) => {
+    // 1. Якщо змінився стан кошика в іншій вкладці:
+    if (event.key === CART_STORAGE_KEY) {
+        console.log('Виявлено зміну кошика в сусідній вкладці!');
+        // Перечитуємо масив кошика з оновленого localStorage
+        cart = loadCartFromStorage();
+        // Оновлюємо бейдж та суму у поточному вікні
+        updateCartSummary();
+        if (typeof renderCartItems === 'function') {
+            renderCartItems();
+        }
+    }
+
+    // 2. Якщо користувач перемкнув тему в сусідній вкладці:
+    if (event.key === THEME_STORAGE_KEY) {
+        applyTheme(event.newValue || 'light');
+    }
+
+    // 3. Якщо змінився список "Улюблене":
+    if (event.key === FAVORITES_STORAGE_KEY) {
+        favoriteProductIds = loadFavoritesFromStorage();
+        updateFavCounter();
+        renderFavoritesList();
+    }
+});
 
 initShop();

@@ -9,25 +9,57 @@
     --primary-hover: #9bff20;
     --secondary-color: #ff8080;
     --secondary-hover: #ff3589;
-    --accent-color: #005c79;
-    --text-dark: #000000;
-    --text-light: #ffffff;
-    --bg-color: #ffffff;
+    --text-on-primary: #000000;   /* текст на лаймових кнопках: завжди чорний */
+    --text-light: #ffffff;        /* завжди білий: текст на hero-картинці, бейджі, hover */
+
+    --bg-color: #ffffff;          /* фон сторінки та шапки */
+    --bg-card: #ffffff;           /* картки товарів, модальні вікна */
+    --text-main: #000000;         /* основний текст (раніше --text-dark) */
+    --text-muted: #666666;        /* другорядний текст */
+    --border-color: #eeeeee;      /* рамки карток */
+    --accent-color: #005c79;      /* рамки-розділювачі, hover-текст */
+    --accent-strong: #005c79;     /* фон елементів з білим текстом (бейдж кошика) */
+    --error-color: #d32f2f;       /* текст помилок валідації */
+
+    --input-bg: #ffffff;
+    --input-text: #000000;
+    --input-border: #d1d5db;
+
+    --sidebar-bg: #000000;
+    --sidebar-text: #ffffff;
+    --sidebar-border: #000000;
+
+    --social-bg: #ffffff;         /* кнопки соцмереж у футері */
+    --drag-over-bg: #ffe5e5;      /* підсвітка зони "Улюблене" */
+    --spinner-track: #f3f3f3;
+    --modal-bg: rgba(0, 0, 0, 0.5); /* затемнення за модальним вікном */
+
     --font-main: 'Golos Text', sans-serif;
     --section-gap: 3vh
 }
 
 body.dark-theme {
-    --primary-color: #91e32c;
-    --primary-hover: #9bff20;
-    --secondary-color: #ff8080;
-    --secondary-hover: #ff3589;
-    --accent-color: #005c79;
-    --text-dark: #000000;
-    --text-light: #ffffff;
-    --bg-color: #ffffff;
-    --font-main: 'Golos Text', sans-serif;
-    --section-gap: 3vh
+    --bg-color: #121212;
+    --bg-card: #1e1e1e;
+    --text-main: #e9ecef;
+    --text-muted: #adb5bd;
+    --border-color: #343a40;
+    --accent-color: #38b6d8;
+    --accent-strong: #0e7490;
+    --error-color: #ff6b6b;
+
+    --input-bg: #2b2b2b;
+    --input-text: #f1f3f5;
+    --input-border: #495057;
+
+    --sidebar-bg: #1e1e1e;
+    --sidebar-text: #f1f3f5;
+    --sidebar-border: #343a40;
+
+    --social-bg: #1e1e1e;
+    --drag-over-bg: #3a1f1f;
+    --spinner-track: #343a40;
+    --modal-bg: rgba(0, 0, 0, 0.75);
 }
 
 .hero {
@@ -56,7 +88,7 @@ body.dark-theme {
 
 .up {
     background-color: transparent;
-    color: var(--text-dark);
+    color: var(--text-main);
     text-decoration: none;
     box-shadow: 0 4px 6px rgba(183, 206, 255, 0.61);
 }
@@ -66,7 +98,7 @@ body.dark-theme {
     -webkit-text-stroke: 0;
     box-shadow: 0 4px 6px rgba(63, 63, 63, 0.384);
     transform: scale(1.13);
-    color: var(--text-dark);
+    color: var(--text-main);
 }
 
 .hero-text {
@@ -77,7 +109,7 @@ body.dark-theme {
 
 body {
     background-color: var(--bg-color);
-    color: var(--text-dark);
+    color: var(--text-main);
     line-height: 1.6;
     font-size: 16px;
     font-family: var(--font-main), sans-serif;
@@ -89,7 +121,7 @@ body {
 .btn-hero {
     margin-top: 20px;
     background-color: var(--primary-color);
-    color: var(--text-dark);
+    color: var(--text-on-primary);
     border-radius: 8px;
     font-weight: 600;
     text-transform: uppercase;
@@ -111,7 +143,7 @@ a {
     display: inline-block;
     padding: 12px 24px;
     background-color: var(--primary-hover);
-    color: var(--text-dark);
+    color: var(--text-on-primary);
     border-radius: 8px;
     font-weight: 600;
     text-transform: uppercase;
@@ -153,8 +185,9 @@ a:hover {
 }
 
 .sidebar {
-    background-color: var(--text-dark);
-    color: var(--text-light);
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    border: 1px solid var(--sidebar-border);
     padding: 20px;
     border-radius: 10px;
 }
@@ -169,7 +202,7 @@ a:hover {
 
 .sidebar h2 {
     text-align: center;
-    color: var(--text-light);
+    color: var(--sidebar-text);
 }
 
 .page-layout {
@@ -256,7 +289,8 @@ footer ul {
     min-width: 250px;
     padding: 15px;
     text-align: center;
-    border: 1px solid #eee;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
     border-radius: 8px;
 
     justify-content: space-between;
@@ -289,7 +323,8 @@ main {
     display: inline-flex;
     align-items: center;
     padding: 5px 10px;
-    background-color: var(--text-light);
+    background-color: var(--social-bg);
+    color: var(--text-main);
     border-radius: 5px;
     font-weight: 400;
     box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
@@ -297,7 +332,7 @@ main {
 }
 
 .social-btn:hover {
-    background-color: var(--text-light);
+    background-color: var(--social-bg);
     color: var(--accent-color);
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
@@ -316,7 +351,7 @@ main {
     display: flex;
     padding: 12px 24px;
     background-color: transparent;
-    color: var(--text-dark);
+    color: var(--text-main);
     border-radius: 0px;
     font-weight: 600;
     text-transform: uppercase;
@@ -328,7 +363,7 @@ main {
 
 .null:hover {
     background-color: transparent;
-    color: #1d1d1d;
+    color: var(--text-main);
     transform: translateY(-2px);
     box-shadow: 0 0px 0px rgba(37, 99, 235, 0.3);
     text-decoration: none;
@@ -364,7 +399,7 @@ main {
 .spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid #f3f3f3;
+    border: 4px solid var(--spinner-track);
     border-top: 4px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -388,7 +423,7 @@ main {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--modal-bg);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -396,7 +431,8 @@ main {
     transition: opacity 0.3s ease;
 }
 .modal-window {
-    background: #fff;
+    background: var(--bg-card);
+    color: var(--text-main);
     padding: 2rem;
     border-radius: 8px;
     width: 90%;
@@ -407,6 +443,7 @@ main {
 }
 .close-btn {
     background: transparent;
+    color: var(--text-main);
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
@@ -485,7 +522,9 @@ main {
     width: 36px;
     height: 26px;
     text-align: center;
-    border: 1px solid #d1d5db;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     font-size: 14px;
     font-weight: 500;
@@ -519,7 +558,7 @@ main {
 }
 
 .dragging { opacity: 0.5; }
-.drag-over { background: #ffe5e5; }
+.drag-over { background: var(--drag-over-bg); }
 
 .fav-count {
     background-color: red;
@@ -544,7 +583,6 @@ main {
 }
 
 
-/* ---- ЛР №15: бейдж кошика + форма замовлення в модальному вікні ---- */
 .btn-cart {
     position: relative;
 }
@@ -559,7 +597,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--accent-color);
+    background-color: var(--accent-strong);
     color: var(--text-light);
     border-radius: 11px;
     font-size: 12px;
@@ -569,7 +607,7 @@ main {
 .no-products {
     grid-column: 1 / -1;
     text-align: center;
-    color: #666;
+    color: var(--text-muted);
 }
 
 .order-form {
@@ -589,14 +627,16 @@ main {
 .order-form input {
     width: 100%;
     padding: 8px;
-    border: 1px solid #d1d5db;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--input-border);
     border-radius: 4px;
 }
 
 .input-error {
     display: block;
     min-height: 1em;
-    color: red;
+    color: var(--error-color);
     font-size: 13px;
 }
 
@@ -615,7 +655,6 @@ main {
     background: #218838;
 }
 
-/* ---- ЛР №16: список улюбленого у модальному вікні ---- */
 .fav-row {
     display: flex;
     align-items: center;
@@ -649,6 +688,18 @@ main {
     font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"] {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+}
+
+#searchResultCount {
+    color: var(--text-muted) !important;
 }
 
 
