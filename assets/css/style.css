@@ -34,6 +34,10 @@
     --spinner-track: #f3f3f3;
     --modal-bg: rgba(0, 0, 0, 0.5); /* затемнення за модальним вікном */
 
+    --header-btn-bg: #ffffff;
+    --header-btn-border: #d9dee7;
+    --header-btn-glow: rgba(0, 92, 121, 0.35);
+
     --font-main: 'Golos Text', sans-serif;
     --section-gap: 3vh
 }
@@ -60,6 +64,10 @@ body.dark-theme {
     --drag-over-bg: #3a1f1f;
     --spinner-track: #343a40;
     --modal-bg: rgba(0, 0, 0, 0.75);
+
+    --header-btn-bg: #1e1e1e;
+    --header-btn-border: #343a40;
+    --header-btn-glow: rgba(56, 182, 216, 0.45);
 }
 
 .hero {
@@ -86,19 +94,42 @@ body.dark-theme {
     align-items: center;
 }
 
-.up {
-    background-color: transparent;
+.up,
+.btn.btn-theme {
+    background: var(--header-btn-bg);
     color: var(--text-main);
     text-decoration: none;
-    box-shadow: 0 4px 6px rgba(183, 206, 255, 0.61);
+    border: 1px solid var(--header-btn-border);
+    box-shadow: none;
 }
 
-.up:hover {
-    background-color: transparent;
+.up:hover,
+.btn.btn-theme:hover {
+    background: var(--header-btn-bg);
     -webkit-text-stroke: 0;
-    box-shadow: 0 4px 6px rgba(63, 63, 63, 0.384);
-    transform: scale(1.13);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 12px var(--header-btn-glow);
+    transform: scale(1.08);
     color: var(--text-main);
+}
+
+.theme-icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.right-panel .up,
+.right-panel .btn.btn-theme {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 82px;
+    height: 66px;
+    padding: 0;
+}
+
+.right-panel .up svg {
+    display: block;
 }
 
 .hero-text {
@@ -698,10 +729,98 @@ input[type="number"] {
     color: var(--input-text);
 }
 
-#searchResultCount {
-    color: var(--text-muted) !important;
+
+.catalog-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin: 20px 0 8px;
+    scroll-margin-top: 150px;
 }
 
+.toolbar-control {
+    padding: 10px 12px;
+    min-width: 200px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+#searchInput {
+    flex: 1 1 260px;
+}
+
+.toolbar-price {
+    min-width: 120px;
+    width: 130px;
+}
+
+.btn-secondary,
+.btn-secondary:hover {
+    padding: 10px 14px;
+    font-size: 14px;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-color);
+}
+
+.catalog-info {
+    margin: 0 0 16px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.product-rating {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 28px 0;
+}
+
+.pagination:empty {
+    display: none;
+}
+
+.page-btn {
+    min-width: 40px;
+    padding: 8px 12px;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.page-btn:hover:not(:disabled) {
+    border-color: var(--accent-color);
+}
+
+.page-btn.is-active {
+    background-color: var(--accent-strong);
+    border-color: var(--accent-strong);
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.page-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
 
 @media (max-width: 768px) {
     .header {

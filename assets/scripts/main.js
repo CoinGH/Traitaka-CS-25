@@ -97,19 +97,26 @@ function renderProducts(products) {
     }
 
     container.innerHTML = products
-        .map((product) => `
+        .map((product) => {
+            const ratingBlock = product.rating
+                ? `<p class="product-rating">★ ${product.rating.rate} (${product.rating.count})</p>`
+                : "";
+
+            return `
             <article class="prod_item" draggable="true" data-id="${product.id}">
                 <img src="${product.image}" alt="${product.title}" class="product_image" draggable="false">
                 <h3>${product.title}</h3>
                 <p class="lower-text">$${product.price}</p>
+                ${ratingBlock}
                 <button class="btn btn-buy" data-id="${product.id}">Купити</button>
-            </article>`).join("");
+            </article>`;
+        }).join("");
 }
 
 async function fetchProducts() {
     try {
         const response = await fetch(
-            "https://fakestoreapi.com/products?limit=8",
+            "https://fakestoreapi.com/products",
         );
 
         if (!response.ok) {
@@ -137,7 +144,14 @@ async function initShop() {
 
         loader.classList.add("hidden");
 
-        renderProducts(data);
+        populateCategorySelect(globalStoreProducts);
+
+        catalogState = readStateFromURL();
+        catalogState.category = validateCategory(catalogState.category);
+
+        applyStateToControls();
+
+        updateCatalog('replace');
     } catch (error) {
         loader.classList.add("hidden");
         container.innerHTML = `<p class="error">Помилка: ${error.message}</p>`;
@@ -304,23 +318,366 @@ favoritesZone.addEventListener('dragleave', () => {
 });
 
 const searchInput = document.getElementById('searchInput');
-const searchResultCount = document.getElementById('searchResultCount');
+const categorySelect = document.getElementById('categorySelect');
+const sortSelect = document.getElementById('sortSelect');
+const perPageSelect = document.getElementById('perPageSelect');
+const minPriceInput = document.getElementById('minPriceInput');
+const maxPriceInput = document.getElementById('maxPriceInput');
+const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+const shareLinkBtn = document.getElementById('shareLinkBtn');
+const paginationContainer = document.getElementById('pagination');
+const catalogInfo = document.getElementById('catalogInfo');
 
-searchInput.addEventListener('input', (event) => {
-    const searchQuery = event.target.value.trim().toLowerCase();
+const CATALOG_DEFAULTS = Object.freeze({
+    q: '',
+    category: 'all',
+    sort: 'default',
+    page: 1,
+    perPage: 6,
+    minPrice: null,
+    maxPrice: null
+});
 
-    const matchedProducts = globalStoreProducts.filter(product => {
-        return product.title.toLowerCase().includes(searchQuery);
-    });
+const ALLOWED_SORTS = ['default', 'price_asc', 'price_desc', 'title_asc', 'rating_desc'];
+const ALLOWED_PER_PAGE = [4, 6, 8, 12];
+const MAX_QUERY_LENGTH = 50;
 
-    if (searchQuery.length > 0) {
-        searchResultCount.textContent = `Знайдено товарів: ${matchedProducts.length}`;
-    } else {
-        searchResultCount.textContent = '';
+let catalogState = { ...CATALOG_DEFAULTS };
+let totalPagesCount = 1;
+
+function debounce(callback, delay = 300) {
+    let timerId = null;
+    return (...args) => {
+        clearTimeout(timerId);
+        timerId = setTimeout(() => callback(...args), delay);
+    };
+}
+
+function parsePrice(rawValue) {
+    if (rawValue === null || String(rawValue).trim() === '') return null;
+
+    const value = Number(rawValue);
+    if (Number.isNaN(value) || value === Infinity || value < 0) return null;
+
+    return value;
+}
+
+function readStateFromURL() {
+    const params = new URLSearchParams(window.location.search);
+
+    const q = (params.get('q') || '').trim().slice(0, MAX_QUERY_LENGTH);
+
+    const category = params.get('category') || CATALOG_DEFAULTS.category;
+
+    const rawSort = params.get('sort');
+    const sort = ALLOWED_SORTS.includes(rawSort) ? rawSort : CATALOG_DEFAULTS.sort;
+
+    const rawPage = Number.parseInt(params.get('page'), 10);
+    const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : CATALOG_DEFAULTS.page;
+
+    const rawPerPage = Number.parseInt(params.get('perPage'), 10);
+    const perPage = ALLOWED_PER_PAGE.includes(rawPerPage) ? rawPerPage : CATALOG_DEFAULTS.perPage;
+
+    let minPrice = parsePrice(params.get('minPrice'));
+    let maxPrice = parsePrice(params.get('maxPrice'));
+    if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
+        [minPrice, maxPrice] = [maxPrice, minPrice];
     }
 
-    renderProducts(matchedProducts);
+    return { q, category, sort, page, perPage, minPrice, maxPrice };
+}
+
+function getAvailableCategories(products) {
+    return [...new Set(products.map(product => product.category))];
+}
+
+function validateCategory(category) {
+    const categories = getAvailableCategories(globalStoreProducts);
+    return categories.includes(category) ? category : CATALOG_DEFAULTS.category;
+}
+
+function buildCatalogURL(state) {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams();
+
+    if (state.q) params.set('q', state.q);
+    if (state.category !== CATALOG_DEFAULTS.category) params.set('category', state.category);
+    if (state.sort !== CATALOG_DEFAULTS.sort) params.set('sort', state.sort);
+    if (state.minPrice !== null) params.set('minPrice', String(state.minPrice));
+    if (state.maxPrice !== null) params.set('maxPrice', String(state.maxPrice));
+    if (state.perPage !== CATALOG_DEFAULTS.perPage) params.set('perPage', String(state.perPage));
+    if (state.page !== CATALOG_DEFAULTS.page) params.set('page', String(state.page));
+
+    url.search = params.toString();
+    return url;
+}
+
+function syncURL(mode = 'push') {
+    const newURL = buildCatalogURL(catalogState);
+
+    if (newURL.href === window.location.href) return;
+
+    const stateSnapshot = { ...catalogState };
+
+    if (mode === 'replace') {
+        history.replaceState(stateSnapshot, '', newURL);
+    } else {
+        history.pushState(stateSnapshot, '', newURL);
+    }
+}
+
+function filterProducts(products, { q, category, minPrice, maxPrice }) {
+    const normalizedQuery = q.toLowerCase();
+
+    return products.filter(product => {
+        const matchesQuery = product.title.toLowerCase().includes(normalizedQuery);
+        const matchesCategory = category === 'all' || product.category === category;
+        const matchesMinPrice = minPrice === null || product.price >= minPrice;
+        const matchesMaxPrice = maxPrice === null || product.price <= maxPrice;
+        return matchesQuery && matchesCategory && matchesMinPrice && matchesMaxPrice;
+    });
+}
+
+function sortProducts(products, sort) {
+    const sorted = [...products];
+
+    switch (sort) {
+        case 'price_asc':
+            return sorted.sort((a, b) => a.price - b.price);
+        case 'price_desc':
+            return sorted.sort((a, b) => b.price - a.price);
+        case 'title_asc':
+            return sorted.sort((a, b) => a.title.localeCompare(b.title));
+        case 'rating_desc':
+            return sorted.sort((a, b) => (b.rating?.rate ?? 0) - (a.rating?.rate ?? 0));
+        default:
+            return sorted;
+    }
+}
+
+function paginateProducts(products, page, perPage) {
+    const totalItems = products.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / perPage));
+
+    const currentPage = Math.min(Math.max(page, 1), totalPages);
+
+    const startIndex = (currentPage - 1) * perPage;
+    const endIndex = startIndex + perPage;
+
+    return {
+        items: products.slice(startIndex, endIndex),
+        totalItems,
+        totalPages,
+        currentPage,
+        startIndex
+    };
+}
+
+function updateCatalog(historyMode = null) {
+    const filtered = filterProducts(globalStoreProducts, catalogState);
+    const sorted = sortProducts(filtered, catalogState.sort);
+    const { items, totalItems, totalPages, currentPage, startIndex } =
+        paginateProducts(sorted, catalogState.page, catalogState.perPage);
+
+    totalPagesCount = totalPages;
+
+    if (currentPage !== catalogState.page) {
+        catalogState.page = currentPage;
+        historyMode = historyMode || 'replace';
+    }
+
+    renderProducts(items);
+    renderPagination(currentPage, totalPages);
+    renderCatalogInfo(totalItems, startIndex, items.length);
+
+    if (historyMode) {
+        syncURL(historyMode);
+    }
+}
+
+function renderCatalogInfo(totalItems, startIndex, shownCount) {
+    if (!catalogInfo) return;
+
+    if (totalItems === 0) {
+        catalogInfo.textContent = catalogState.q
+            ? `За запитом «${catalogState.q}» нічого не знайдено`
+            : 'За вибраними фільтрами товарів не знайдено';
+        return;
+    }
+
+    const from = startIndex + 1;
+    const to = startIndex + shownCount;
+    catalogInfo.textContent = `Показано ${from}–${to} з ${totalItems} товарів`;
+}
+
+function renderPagination(currentPage, totalPages) {
+    if (!paginationContainer) return;
+
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+
+    paginationContainer.innerHTML = `
+        <button class="page-btn" data-page="${currentPage - 1}"
+            ${currentPage === 1 ? 'disabled' : ''} aria-label="Попередня сторінка">‹</button>
+
+        ${pageNumbers.map(number => `
+            <button class="page-btn ${number === currentPage ? 'is-active' : ''}"
+                data-page="${number}"
+                ${number === currentPage ? 'aria-current="page"' : ''}>${number}</button>
+        `).join('')}
+
+        <button class="page-btn" data-page="${currentPage + 1}"
+            ${currentPage === totalPages ? 'disabled' : ''} aria-label="Наступна сторінка">›</button>
+    `;
+}
+
+function goToPage(targetPage) {
+    if (targetPage === catalogState.page) return;
+
+    catalogState.page = targetPage;
+    updateCatalog('push');
+
+    document.querySelector('.catalog-toolbar')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function populateCategorySelect(products) {
+    if (!categorySelect) return;
+
+    const categories = getAvailableCategories(products);
+
+    categorySelect.innerHTML = '<option value="all">Усі категорії</option>';
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        categorySelect.append(option);
+    });
+}
+
+function applyStateToControls() {
+    if (searchInput) searchInput.value = catalogState.q;
+    if (categorySelect) categorySelect.value = catalogState.category;
+    if (sortSelect) sortSelect.value = catalogState.sort;
+    if (perPageSelect) perPageSelect.value = String(catalogState.perPage);
+    if (minPriceInput) minPriceInput.value = catalogState.minPrice ?? '';
+    if (maxPriceInput) maxPriceInput.value = catalogState.maxPrice ?? '';
+}
+
+if (searchInput) {
+    const handleSearch = debounce((value) => {
+        catalogState.q = value.trim().slice(0, MAX_QUERY_LENGTH);
+        catalogState.page = 1;
+        updateCatalog('replace');
+    }, 300);
+
+    searchInput.addEventListener('input', (event) => handleSearch(event.target.value));
+}
+
+if (minPriceInput && maxPriceInput) {
+    const handlePriceChange = debounce(() => {
+        catalogState.minPrice = parsePrice(minPriceInput.value);
+        catalogState.maxPrice = parsePrice(maxPriceInput.value);
+        catalogState.page = 1;
+        updateCatalog('replace');
+    }, 300);
+
+    minPriceInput.addEventListener('input', handlePriceChange);
+    maxPriceInput.addEventListener('input', handlePriceChange);
+}
+
+if (categorySelect) {
+    categorySelect.addEventListener('change', (event) => {
+        catalogState.category = event.target.value;
+        catalogState.page = 1;
+        updateCatalog('push');
+    });
+}
+
+if (sortSelect) {
+    sortSelect.addEventListener('change', (event) => {
+        catalogState.sort = event.target.value;
+        catalogState.page = 1;
+        updateCatalog('push');
+    });
+}
+
+if (perPageSelect) {
+    perPageSelect.addEventListener('change', (event) => {
+        const newPerPage = Number(event.target.value);
+        catalogState.perPage = ALLOWED_PER_PAGE.includes(newPerPage) ? newPerPage : CATALOG_DEFAULTS.perPage;
+        catalogState.page = 1;
+        updateCatalog('push');
+    });
+}
+
+if (resetFiltersBtn) {
+    resetFiltersBtn.addEventListener('click', () => {
+        catalogState = { ...CATALOG_DEFAULTS };
+        applyStateToControls();
+        updateCatalog('push');
+    });
+}
+
+if (paginationContainer) {
+    paginationContainer.addEventListener('click', (event) => {
+        const button = event.target.closest('.page-btn');
+        if (!button || button.disabled) return;
+
+        goToPage(Number(button.dataset.page));
+    });
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
+
+    const activeElement = document.activeElement;
+    const isTyping = ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement?.tagName) || activeElement?.isContentEditable;
+    if (isTyping) return;
+
+    const isModalOpen = !cartOverlay.classList.contains('hidden') || !favoritesOverlay.classList.contains('hidden');
+    if (isModalOpen) return;
+
+    const targetPage = catalogState.page + (event.key === 'ArrowLeft' ? -1 : 1);
+    if (targetPage < 1 || targetPage > totalPagesCount) return;
+
+    goToPage(targetPage);
 });
+
+window.addEventListener('popstate', (event) => {
+    console.log('popstate → history.state:', event.state);
+
+    if (globalStoreProducts.length === 0) return;
+
+    catalogState = readStateFromURL();
+    catalogState.category = validateCategory(catalogState.category);
+
+    applyStateToControls();
+    updateCatalog();
+});
+
+if (shareLinkBtn) {
+    shareLinkBtn.addEventListener('click', async () => {
+        const originalText = shareLinkBtn.textContent;
+
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+            shareLinkBtn.textContent = '✅ Скопійовано';
+        } catch (error) {
+            console.error('Не вдалося скопіювати посилання:', error);
+            window.prompt('Скопіюйте посилання вручну:', window.location.href);
+        }
+
+        setTimeout(() => {
+            shareLinkBtn.textContent = originalText;
+        }, 2000);
+    });
+}
 
 // Form
 

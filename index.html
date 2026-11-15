@@ -73,13 +73,34 @@
                 <div class="spinner"></div>
                 <p>Завантаження товарів...</p>
             </div>
-            <div class="search-bar" style="margin: 20px 0; display: flex; gap: 12px; align-items: center;">
-                <input type="text" id="searchInput" placeholder="Почніть вводити назву товару..." style="padding: 10px; width: 320px; border: 1px solid #ccc; border-radius: 6px;">
-                <span id="searchResultCount" style="color: #666; font-size: 14px;"></span>
-            </div>
+            <section class="catalog-toolbar" aria-label="Фільтри каталогу">
+                <input type="search" id="searchInput" class="toolbar-control" placeholder="Пошук за назвою товару..." maxlength="50" autocomplete="off">
+                <select id="categorySelect" class="toolbar-control" aria-label="Категорія">
+                    <option value="all">Усі категорії</option>
+                </select>
+                <select id="sortSelect" class="toolbar-control" aria-label="Сортування">
+                    <option value="default">За замовчуванням</option>
+                    <option value="price_asc">Ціна: від дешевих до дорогих</option>
+                    <option value="price_desc">Ціна: від дорогих до дешевих</option>
+                    <option value="title_asc">Назва: А → Я</option>
+                    <option value="rating_desc">Рейтинг: найкращі спочатку</option>
+                </select>
+                <input type="number" id="minPriceInput" class="toolbar-control toolbar-price" placeholder="Ціна від" min="0" step="any" aria-label="Мінімальна ціна">
+                <input type="number" id="maxPriceInput" class="toolbar-control toolbar-price" placeholder="Ціна до" min="0" step="any" aria-label="Максимальна ціна">
+                <select id="perPageSelect" class="toolbar-control" aria-label="Товарів на сторінці">
+                    <option value="4">4 товари на сторінці</option>
+                    <option value="6">6 товарів на сторінці</option>
+                    <option value="8">8 товарів на сторінці</option>
+                    <option value="12">12 товарів на сторінці</option>
+                </select>
+                <button type="button" id="resetFiltersBtn" class="btn btn-secondary">Скинути</button>
+                <button type="button" id="shareLinkBtn" class="btn btn-secondary">🔗 Поділитися</button>
+            </section>
+            <p id="catalogInfo" class="catalog-info" aria-live="polite"></p>
             <div class="products-grid">
 
             </div>
+            <nav id="pagination" class="pagination" aria-label="Сторінки каталогу"></nav>
         </section>
     </main>
     <div class="page-layout-news">
