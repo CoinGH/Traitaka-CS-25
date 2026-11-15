@@ -41,10 +41,14 @@
                     <p> Перетягніть сюди товари в Улюблене</p>
                 </div>
                 <a href="#" class="up btn-cart">
+                    <span class="cart-badge" id="cartCountBadge">0</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="32" height="32">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                     </svg>
                 </a>
+                <button id="themeToggleBtn" class="btn btn-theme" aria-label="Перемкнути тему">
+                    <span class="theme-icon">🌙</span>
+                </button>
             </div>
         </header>
     <div class="hero">
@@ -69,9 +73,34 @@
                 <div class="spinner"></div>
                 <p>Завантаження товарів...</p>
             </div>
+            <section class="catalog-toolbar" aria-label="Фільтри каталогу">
+                <input type="search" id="searchInput" class="toolbar-control" placeholder="Пошук за назвою товару..." maxlength="50" autocomplete="off">
+                <select id="categorySelect" class="toolbar-control" aria-label="Категорія">
+                    <option value="all">Усі категорії</option>
+                </select>
+                <select id="sortSelect" class="toolbar-control" aria-label="Сортування">
+                    <option value="default">За замовчуванням</option>
+                    <option value="price_asc">Ціна: від дешевих до дорогих</option>
+                    <option value="price_desc">Ціна: від дорогих до дешевих</option>
+                    <option value="title_asc">Назва: А → Я</option>
+                    <option value="rating_desc">Рейтинг: найкращі спочатку</option>
+                </select>
+                <input type="number" id="minPriceInput" class="toolbar-control toolbar-price" placeholder="Ціна від" min="0" step="any" aria-label="Мінімальна ціна">
+                <input type="number" id="maxPriceInput" class="toolbar-control toolbar-price" placeholder="Ціна до" min="0" step="any" aria-label="Максимальна ціна">
+                <select id="perPageSelect" class="toolbar-control" aria-label="Товарів на сторінці">
+                    <option value="4">4 товари на сторінці</option>
+                    <option value="6">6 товарів на сторінці</option>
+                    <option value="8">8 товарів на сторінці</option>
+                    <option value="12">12 товарів на сторінці</option>
+                </select>
+                <button type="button" id="resetFiltersBtn" class="btn btn-secondary">Скинути</button>
+                <button type="button" id="shareLinkBtn" class="btn btn-secondary">🔗 Поділитися</button>
+            </section>
+            <p id="catalogInfo" class="catalog-info" aria-live="polite"></p>
             <div class="products-grid">
 
             </div>
+            <nav id="pagination" class="pagination" aria-label="Сторінки каталогу"></nav>
         </section>
     </main>
     <div class="page-layout-news">
@@ -132,9 +161,7 @@
         </section>
     </footer>
 
-    <!-- Темний напівпрозорий фон, який перекриває весь сайт -->
     <div class="modal-overlay hidden" id="cartOverlay">
-        <!-- Саме біле вікно кошика по центру -->
         <div class="modal-window">
             <div class="modal-header">
                 <h2>Ваш Кошик</h2>
@@ -147,10 +174,45 @@
 
             <div class="modal-footer">
                 <h3>Разом: $<span id="cartTotalSum">0</span></h3>
-                <a href="checkout.html" class="btn btn-primary" id="checkoutBtn"
-                >Оформити замовлення</a
-                >
+
+                <form id="checkoutOrderForm" class="order-form" novalidate>
+                    <div class="form-row">
+                        <label for="clientName">ПІБ покупця:</label>
+                        <input type="text" id="clientName" name="clientName" placeholder="Коваленко Олександр Сергійович" required>
+                        <span class="input-error" id="nameError"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="clientPhone">Номер телефону (+380...):</label>
+                        <input type="tel" id="clientPhone" name="clientPhone" placeholder="+38 (097) 123-45-67" required>
+                        <span class="input-error" id="phoneError"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="clientEmail">Електронна пошта:</label>
+                        <input type="email" id="clientEmail" name="clientEmail" placeholder="olexandr@example.com" required>
+                        <span class="input-error" id="emailError"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="orderPromo">Промокод (якщо є):</label>
+                        <input type="text" id="orderPromo" name="orderPromo" placeholder="Введіть SALE10 для знижки 10%">
+                    </div>
+
+                    <button type="submit" id="btnPlaceOrder" class="btn-order">Підтвердити замовлення</button>
+                </form>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="favoritesOverlay">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h2>Улюблене</h2>
+                <button class="close-btn" id="closeFavoritesBtn">&times;</button>
+            </div>
+
+            <div id="favoritesList"></div>
         </div>
     </div>
 
