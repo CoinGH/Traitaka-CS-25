@@ -128,27 +128,30 @@ window.addEventListener('popstate', (event) => {
 
 ## Скриншот адресного рядка з параметрами фільтрації
 
-![Фото для звіту](screenshot17_0.png)
+![Фото для звіту](_screenshots/screenshot17_0.png)
+![Фото для звіту](_screenshots/screenshot17_01.png)
 
 ## Скриншот вітрини на 2-й сторінці
 
-![Фото для звіту](screenshot17_1.png)
+![Фото для звіту](_screenshots/screenshot17_1.png)
 
 ## Скриншот перевірки некоректних параметрів
 
 Адреса `index.html?sort=hack&page=999&category=cars` автоматично виправилась, а сторінка показала останню існуючу сторінку каталогу.
 
-![Фото для звіту](screenshot17_2.png)
+![Фото для звіту](_screenshots/screenshot17_2.png)
+![Фото для звіту](_screenshots/screenshot17_21.png)
 
 ## Скриншот перевірки XSS-рядка
 
 Адреса `index.html?q=<img src=x onerror=alert(1)>` показала запит як звичайний текст, вікно alert не з'явилося.
 
-![Фото для звіту](screenshot17_3.png)
+![Фото для звіту](_screenshots/screenshot17_3.png)
+![Фото для звіту](_screenshots/screenshot17_31.png)
 
 ## Скриншот консолі з history.state
 
-![Фото для звіту](screenshot17_4.png)
+![Фото для звіту](_screenshots/screenshot17_4.png)
 
 `history.length` показує, скільки записів зараз є в історії вкладки. Воно росте з кожним `pushState()` (категорія, сортування, сторінка), але не росте від `replaceState()` (живий пошук). `history.state` повертає знімок `catalogState`, який ми передали в `pushState()` або `replaceState()` для поточного запису. Якщо запис створено без нашого знімка (наприклад, перше відкриття сторінки), то там буде `null`.
 
@@ -160,7 +163,7 @@ window.addEventListener('popstate', (event) => {
 
 Приклад адреси: `index.html?minPrice=20&maxPrice=100&perPage=8`
 
-![Фото для звіту](screenshot17_5.png)
+![Фото для звіту](_screenshots/screenshot17_5.png)
 
 ### Список «Товарів на сторінці»
 
